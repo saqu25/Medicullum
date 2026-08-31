@@ -5,7 +5,7 @@
   // EmailJS wiring for [data-lead-form] submissions (book-consultation.html,
   // contact.html). Template variables match the existing EmailJS template:
   // from_name, from_email, phone, track, university, message.
-  var EMAILJS_SERVICE_ID = "service_0dzqcl2";
+  var EMAILJS_SERVICE_ID = "service_f70eyz9";
   var EMAILJS_TEMPLATE_ID = "template_92tscfk";
   var EMAILJS_PUBLIC_KEY = "zbZkvxM7Y99IJLVRB";
   if (window.emailjs) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
