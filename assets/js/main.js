@@ -206,8 +206,14 @@
 
         var successEl = form.parentElement.querySelector("[data-form-success]");
         var errorEl = form.parentElement.querySelector("[data-form-error]");
+        var errorDetailEl = errorEl ? errorEl.querySelector("[data-error-detail]") : null;
         var submitBtn = form.querySelector('[type="submit"]');
         var originalLabel = submitBtn ? submitBtn.textContent : "";
+
+        var showError = function (detail) {
+          if (errorDetailEl) errorDetailEl.textContent = detail || "";
+          if (errorEl) errorEl.classList.add("visible", "flex");
+        };
 
         if (errorEl) errorEl.classList.remove("visible", "flex");
         if (submitBtn) {
@@ -217,7 +223,7 @@
 
         if (!window.emailjs) {
           console.error("EmailJS SDK failed to load — the request was never sent.");
-          if (errorEl) errorEl.classList.add("visible", "flex");
+          showError("EmailJS script failed to load (network/ad-blocker?)");
           if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.textContent = originalLabel;
@@ -232,7 +238,9 @@
           })
           .catch(function (err) {
             console.error("EmailJS send failed:", err);
-            if (errorEl) errorEl.classList.add("visible", "flex");
+            var detail = (err && (err.text || err.message)) || "Unknown error";
+            if (err && err.status) detail += " (status " + err.status + ")";
+            showError(detail);
           })
           .finally(function () {
             if (submitBtn) {
