@@ -360,6 +360,14 @@ body {
   display: flex;
 }
 
+.form-error {
+  display: none;
+}
+
+.form-error.visible {
+  display: flex;
+}
+
 /* Footer */
 .site-footer {
   background: var(--navy-deep);

@@ -220,6 +220,7 @@
       <div class="card p-8 md:p-10 relative">
         <h3 class="font-serifDisplay text-xl font-bold text-navy mb-6">Send Us a Message</h3>
         <form data-lead-form class="grid sm:grid-cols-2 gap-6">
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] w-px h-px opacity-0" style="pointer-events:none;" />
           <div class="sm:col-span-1">
             <label class="field-label" for="c-name">Full Name *</label>
             <input class="field-input" type="text" id="c-name" name="name" autocomplete="name" required />
@@ -244,6 +245,12 @@
           <div class="w-16 h-16 rounded-full bg-navy/5 flex items-center justify-center mb-5"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" class="text-navy"><path d="M5 13L9.5 17.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3 class="font-serifDisplay text-2xl font-bold text-navy mb-2">Message sent!</h3>
           <p class="text-muted max-w-sm">Thank you for reaching out. Our team will get back to you shortly.</p>
+        </div>
+
+        <div data-form-error class="form-error absolute inset-0 bg-white rounded-xl2 flex-col items-center justify-center text-center p-10">
+          <div class="w-16 h-16 rounded-full bg-[#d9534f]/10 flex items-center justify-center mb-5"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16.5h.01" stroke="#d9534f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#d9534f" stroke-width="2"/></svg></div>
+          <h3 class="font-serifDisplay text-2xl font-bold text-navy mb-2">Something went wrong</h3>
+          <p class="text-muted max-w-sm">Your message couldn't be sent. Please try again, or reach us directly on WhatsApp or by phone.</p>
         </div>
       </div>
     </div>
@@ -343,6 +350,7 @@
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.82 12.04 21.82C17.5 21.82 21.95 17.37 21.95 11.91C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.68 2 12.04 2Z"/></svg>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="/assets/js/main.js"></script>
 </body>
 </html>

@@ -2,6 +2,14 @@
 (function () {
   "use strict";
 
+  // EmailJS wiring for [data-lead-form] submissions (book-consultation.html,
+  // contact.html). Template variables match the existing EmailJS template:
+  // from_name, from_email, phone, track, university, message.
+  var EMAILJS_SERVICE_ID = "service_0dzqcl2";
+  var EMAILJS_TEMPLATE_ID = "template_92tscfk";
+  var EMAILJS_PUBLIC_KEY = "zbZkvxM7Y99IJLVRB";
+  if (window.emailjs) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
   document.addEventListener("DOMContentLoaded", function () {
     initMobileNav();
     initStickyHeader();
@@ -155,6 +163,26 @@
     });
   }
 
+  function buildLeadEmailParams(form) {
+    var el = form.elements;
+    var val = function (name) { return el[name] ? el[name].value : ""; };
+
+    var extraLines = [];
+    if (val("nationality")) extraLines.push("Nationality: " + val("nationality"));
+    if (val("intake")) extraLines.push("Preferred intake: " + val("intake"));
+    if (val("contact_time")) extraLines.push("Best time to contact: " + val("contact_time"));
+    var message = extraLines.concat(val("message") ? [val("message")] : []).join("\n");
+
+    return {
+      from_name: val("name"),
+      from_email: val("email"),
+      phone: val("phone"),
+      track: val("program"),
+      university: val("university"),
+      message: message
+    };
+  }
+
   function initFormFeedback() {
     document.querySelectorAll("[data-lead-form]").forEach(function (form) {
       form.addEventListener("submit", function (event) {
@@ -172,9 +200,46 @@
           return;
         }
 
+        // Honeypot: bots fill hidden fields, real visitors never do
+        var honeypot = form.querySelector('[name="_gotcha"]');
+        if (honeypot && honeypot.value) return;
+
         var successEl = form.parentElement.querySelector("[data-form-success]");
-        form.classList.add("hidden");
-        if (successEl) successEl.classList.add("visible", "flex");
+        var errorEl = form.parentElement.querySelector("[data-form-error]");
+        var submitBtn = form.querySelector('[type="submit"]');
+        var originalLabel = submitBtn ? submitBtn.textContent : "";
+
+        if (errorEl) errorEl.classList.remove("visible", "flex");
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Sending…";
+        }
+
+        if (!window.emailjs) {
+          console.error("EmailJS SDK failed to load — the request was never sent.");
+          if (errorEl) errorEl.classList.add("visible", "flex");
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalLabel;
+          }
+          return;
+        }
+
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, buildLeadEmailParams(form))
+          .then(function () {
+            form.classList.add("hidden");
+            if (successEl) successEl.classList.add("visible", "flex");
+          })
+          .catch(function (err) {
+            console.error("EmailJS send failed:", err);
+            if (errorEl) errorEl.classList.add("visible", "flex");
+          })
+          .finally(function () {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalLabel;
+            }
+          });
       });
     });
   }
